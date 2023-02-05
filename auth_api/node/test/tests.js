@@ -5,15 +5,27 @@ import { protectFunction } from '../services/protected'
 const expect = chai.expect;
 
 describe('loginFunction()', function () {
-  it('Test login', function () {
+  it('Test login (success)', async function () {
+    const token = await loginFunction("admin", "secret")
+    expect(typeof token).to.be.equal('string');
+  });
 
-    expect("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.StuYX978pQGnCeeaj2E1yBYwQvZIodyDTCJWXdsxBGI").to.be.equal(loginFunction("admin", "secret"));
+  it('Test login (failed)', async function () {
+    const token = await loginFunction("admin", "secret123")
+    expect(token).to.be.equal(null);
   });
 });
 
-describe('protectFunction()', function () {
-  it('Test protected', function () {
+describe('protectFunction() ', function () {
+  it('Test protected (success)', async function () {
+    const token = await loginFunction("admin", "secret")
+    const result = protectFunction('Bearer ' + token)
+    expect(result).to.be.equal("welcome! this is a protected route");
+  });
 
-    expect("You are under protected data").to.be.equal(protectFunction("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4ifQ.StuYX978pQGnCeeaj2E1yBYwQvZIodyDTCJWXdsxBGI"));
+  it('Test protected (failed)', async function () {
+    const token = await loginFunction("admin", "secrets")
+    const result = protectFunction('Bearer ' + token)
+    expect(result).to.be.equal(null);
   });
 });

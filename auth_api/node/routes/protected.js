@@ -1,10 +1,9 @@
 import { protectFunction } from '../services/protected';
 
-export const protect = (req, res, next) => {
+export const protect = (req, res) => {
   let authorization = req.headers.authorization;
-  let response = {
-    "data": protectFunction(authorization)
-  };
-  res.send(response);
-  next();
+  
+  const getProtectedRoute = protectFunction(authorization)
+
+  getProtectedRoute ? res.send({"data": getProtectedRoute}) : res.status(403).send({"data": "You are not allowed access"})
 }
